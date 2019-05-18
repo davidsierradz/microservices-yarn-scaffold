@@ -1,0 +1,6 @@
+{
+  "extends": ["plugin:node/recommended-module"],
+  "rules": {
+    "no-console": "warn"
+  }
+}

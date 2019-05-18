@@ -1,0 +1,4 @@
+{
+  "extends": ["react-app", "plugin:import/errors"],
+  "rules": { "no-console": "warn" }
+}

@@ -1,0 +1,23 @@
+#! /bin/bash
+set -eo pipefail
+IFS="$(printf '\n\t')"
+cd "$(dirname "${BASH_SOURCE[0]}")"
+
+case "$1" in
+	-u|--uninstall)
+		docker rm --force --volumes service-a-db service-b-db adminer
+		exit 0
+		;;
+	-r|--reinstall)
+		./$(basename -- "${BASH_SOURCE[0]}") --uninstall
+		./$(basename -- "${BASH_SOURCE[0]}")
+		exit 0
+		;;
+esac
+
+docker run --name service-a-db --rm -d -p 5432:5432 -v service-a-data:/var/lib/postgresql/data -e POSTGRES_PASSWORD=example postgres:alpine
+docker run --name service-b-db --rm -d -p 5433:5432 -v service-b-data:/var/lib/postgresql/data -e POSTGRES_PASSWORD=example postgres:alpine
+docker run --name adminer --rm -d --link service-a-db --link service-b-db -p 8002:8080 adminer:standalone
+
+cd ..
+yarn install
